@@ -6,8 +6,8 @@ TLS parameters, the server address and name, the date, and the request
 headers.
 
 This fork renders the page with **nginx's native SSI module** and no longer
-supports Apache. The original Apache version lives at
-<https://github.com/bernd289/testpage>.
+supports Apache. It lives at <https://github.com/MaZderMind/testpage>; the
+original Apache version lives at <https://github.com/bernd289/testpage>.
 
 ## How it works
 

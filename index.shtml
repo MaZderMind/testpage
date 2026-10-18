@@ -49,6 +49,6 @@
 	while generally accepting
 	<span class="mark_blue"><!--#echo var="http_accept" default="" --></span>
 	<br><br><br>
-	<span id="forkongithub"><a href="https://github.com/bernd289/testpage">Fork me on GitHub</a></span>
+	<span id="forkongithub"><a href="https://github.com/MaZderMind/testpage">Fork me on GitHub</a></span>
 </body>
 </html>
