@@ -1,16 +1,16 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title><!--#echo var="SERVER_NAME" --></title>
+	<title><!--#echo var="host" --></title>
 	<link type="text/css" rel="stylesheet" href="style.css">
 </head>
 <body>
-	<!--#if expr='v("HTTPS") = "on"' -->
-		<span class="mark_green"><!--#echo var="SSL_PROTOCOL" --> (<!--#echo var="SSL_CIPHER" --> <!--#echo var="SSL_CIPHER_USEKEYSIZE" -->bit SNI=<!--#echo var="SSL_TLS_SNI" -->) encrypted</span>
+	<!--#if expr="$https = on" -->
+		<span class="mark_green"><!--#echo var="ssl_protocol" --> (<!--#echo var="ssl_cipher" --> SNI=<!--#echo var="ssl_server_name" default="" -->) encrypted</span>
 	<!--#else -->
 		<span class="mark_red">unencrypted</span>
 	<!--#endif -->
-	<!--#if expr='v("REMOTE_ADDR") =~ /(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))/' -->
+	<!--#if expr="$ipversion = ipv6" -->
 		<span class="mark_green">IPv6</span>
 	<!--#else -->
 		<span class="mark_red">IPv4</span>
@@ -19,39 +19,35 @@
 	<br>
 	from
 	<span class="mark_blue">
-		<a class="mark_blue" href="https://apps.db.ripe.net/db-web-ui/query?searchtext=<!--#echo var="REMOTE_ADDR" -->"><!--#echo var="REMOTE_ADDR" --></a>:<!--#echo var="REMOTE_PORT" -->
+		<a class="mark_blue" href="https://apps.db.ripe.net/db-web-ui/query?searchtext=<!--#echo var="remote_addr" -->"><!--#echo var="remote_addr" --></a>:<!--#echo var="remote_port" -->
 	</span>
-	<!--#if expr='v("REMOTE_HOST") = ""' -->
-		<span class="mark_red">(without DNS name)</span>
-	<!--#else -->
-		<span class="mark_green">(<!--#echo var="REMOTE_HOST" -->)</span>
-	<!--#endif -->
+	<span class="mark_red">(without DNS name)</span>
 	<br>
 	to 
 	<span class="mark_blue">
-		<a class="mark_blue" href="https://apps.db.ripe.net/db-web-ui/query?searchtext=<!--#echo var='SERVER_ADDR' -->"><!--#echo var="SERVER_ADDR" --></a>:<!--#echo var="SERVER_PORT" -->
+		<a class="mark_blue" href="https://apps.db.ripe.net/db-web-ui/query?searchtext=<!--#echo var="server_addr" -->"><!--#echo var="server_addr" --></a>:<!--#echo var="server_port" -->
 	</span>
-	<span class="mark_green"><b> (<!--#echo var="SERVER_NAME" -->) </b></span>
+	<span class="mark_green"><b> (<!--#echo var="host" -->) </b></span>
 	<br>
 	at
-	<span class="mark_blue"><!--#echo var="DATE_LOCAL" --> (<!--#echo var="DATE_GMT" -->)</span>
+	<span class="mark_blue"><!--#echo var="date_local" --> (<!--#echo var="date_gmt" -->)</span>
 	<br>
 	using 
-	<span class="mark_blue"><!--#echo var="HTTP_USER_AGENT" --></span>
+	<span class="mark_blue"><!--#echo var="http_user_agent" default="" --></span>
 	<br>
 	with 
-	<span class="mark_blue"><!--#echo var="SERVER_PROTOCOL" --></span>
+	<span class="mark_blue"><!--#echo var="server_protocol" --></span>
 	using request-method
-	<span class="mark_blue"><!--#echo var="REQUEST_METHOD" --></span>
+	<span class="mark_blue"><!--#echo var="request_method" --></span>
 	on 
-	<span class="mark_blue"><!--#echo var="HTTP_CONNECTION" --></span>
+	<span class="mark_blue"><!--#echo var="http_connection" default="" --></span>
 	connection 
 	<br>
 	preferring
-	<span class="mark_blue"><!--#echo var="HTTP_ACCEPT_LANGUAGE" --></span>
+	<span class="mark_blue"><!--#echo var="http_accept_language" default="" --></span>
 	<br>
 	while generally accepting
-	<span class="mark_blue"><!--#echo var="HTTP_ACCEPT" --></span>
+	<span class="mark_blue"><!--#echo var="http_accept" default="" --></span>
 	<br><br><br>
 	<span id="forkongithub"><a href="https://github.com/bernd289/testpage">Fork me on GitHub</a></span>
 </body>
