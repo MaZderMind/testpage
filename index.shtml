@@ -21,7 +21,6 @@
 	<span class="mark_blue">
 		<a class="mark_blue" href="https://apps.db.ripe.net/db-web-ui/query?searchtext=<!--#echo var="remote_addr" -->"><!--#echo var="remote_addr" --></a>:<!--#echo var="remote_port" -->
 	</span>
-	<span class="mark_red">(without DNS name)</span>
 	<br>
 	to 
 	<span class="mark_blue">
@@ -48,6 +47,12 @@
 	<br>
 	while generally accepting
 	<span class="mark_blue"><!--#echo var="http_accept" default="" --></span>
+	<br>
+	as plain text
+	<span class="mark_blue">
+		<a class="mark_blue" href="full.txt">full.txt</a>
+		(<a class="mark_blue" href="ip.txt">ip.txt</a>)
+	</span>
 	<br><br><br>
 	<span id="forkongithub"><a href="https://github.com/MaZderMind/testpage">Fork me on GitHub</a></span>
 </body>

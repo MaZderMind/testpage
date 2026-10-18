@@ -71,8 +71,8 @@ to hide the branch that should not have been rendered.
 ## Differences from the Apache version
 
 - **No reverse DNS.** nginx has no built-in reverse lookup, so `REMOTE_HOST`
-  does not exist and the page always reports "(without DNS name)". Getting it
-  back needs a separate process in front of or behind nginx.
+  does not exist and the page does not show a DNS name at all. The client may
+  well have one, this server just cannot see it.
 - **No cipher key size.** nginx exposes `$ssl_cipher` but no variable for the
   negotiated key size, so the "… bit" part is gone.
 - **Values are escaped.** nginx's `#echo` HTML-escapes by default. That also

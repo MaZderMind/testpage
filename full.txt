@@ -1,5 +1,5 @@
 <!--#if expr="$https = on" --><!--#echo var="ssl_protocol" encoding="none" --> (<!--#echo var="ssl_cipher" encoding="none" --> SNI=<!--#echo var="ssl_server_name" encoding="none" default="" -->) encrypted <!--#else -->unencrypted<!--#endif --> <!--#if expr="$ipversion = ipv6" -->IPv6<!--#else -->IPv4<!--#endif --> request
-from <!--#echo var="remote_addr" encoding="none" -->:<!--#echo var="remote_port" encoding="none" --> (without DNS name)
+from <!--#echo var="remote_addr" encoding="none" -->:<!--#echo var="remote_port" encoding="none" -->
 to <!--#echo var="server_addr" encoding="none" -->:<!--#echo var="server_port" encoding="none" --> (<!--#echo var="host" encoding="none" -->)
 at Local Time: <!--#echo var="date_local" encoding="none" -->, GMT: <!--#echo var="date_gmt" encoding="none" -->
 using <!--#echo var="http_user_agent" encoding="none" default="" -->
