@@ -1,8 +1,8 @@
-<!--#if expr='v("HTTPS") = "on"' --><!--#echo var='SSL_PROTOCOL' --> (<!--#echo var='SSL_CIPHER' --> <!--#echo var='SSL_CIPHER_USEKEYSIZE' -->bit SNI=<!--#echo var='SSL_TLS_SNI' -->) encrypted <!--#else -->unencrypted<!--#endif --> <!--#if expr='v("REMOTE_ADDR") =~ /(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))/' -->IPv6<!--#else -->IPv4<!--#endif --> request
-from <!--#echo var="REMOTE_ADDR" -->:<!--#echo var="REMOTE_PORT" --> <!--#if expr='v("REMOTE_HOST") = ""' -->(without DNS name)<!--#else -->(<!--#echo var='REMOTE_HOST' -->)<!--#endif -->
-to <!--#echo var="SERVER_ADDR" -->:<!--#echo var="SERVER_PORT" --> (<!--#echo var="SERVER_NAME" -->)
-at Local Time: <!--#echo var="DATE_LOCAL" -->, GMT: <!--#echo var="DATE_GMT" -->
-using <!--#echo var="HTTP_USER_AGENT" -->
-with <!--#echo var="SERVER_PROTOCOL" --> using request-method <!--#echo var="REQUEST_METHOD" --> on <!--#echo var="HTTP_CONNECTION" --> connection
-preferring <!--#echo var="HTTP_ACCEPT_LANGUAGE" -->
-while generally accepting <!--#echo var="HTTP_ACCEPT" -->
+<!--#if expr="$https = on" --><!--#echo var="ssl_protocol" encoding="none" --> (<!--#echo var="ssl_cipher" encoding="none" --> SNI=<!--#echo var="ssl_server_name" encoding="none" default="" -->) encrypted <!--#else -->unencrypted<!--#endif --> <!--#if expr="$ipversion = ipv6" -->IPv6<!--#else -->IPv4<!--#endif --> request
+from <!--#echo var="remote_addr" encoding="none" -->:<!--#echo var="remote_port" encoding="none" --> (without DNS name)
+to <!--#echo var="server_addr" encoding="none" -->:<!--#echo var="server_port" encoding="none" --> (<!--#echo var="host" encoding="none" -->)
+at Local Time: <!--#echo var="date_local" encoding="none" -->, GMT: <!--#echo var="date_gmt" encoding="none" -->
+using <!--#echo var="http_user_agent" encoding="none" default="" -->
+with <!--#echo var="server_protocol" encoding="none" --> using request-method <!--#echo var="request_method" encoding="none" --> on <!--#echo var="http_connection" encoding="none" default="" --> connection
+preferring <!--#echo var="http_accept_language" encoding="none" default="" -->
+while generally accepting <!--#echo var="http_accept" encoding="none" default="" -->

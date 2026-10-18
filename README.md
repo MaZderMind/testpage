@@ -1,82 +1,93 @@
 # testpage
 
-this is an alternative to http://test.schrimpe.de/
+A page that tells you what the web server sees about your request: your
+address and port, the IP version, whether the connection is encrypted, the
+TLS parameters, the server address and name, the date, and the request
+headers.
+
+This fork renders the page with **nginx's native SSI module** and no longer
+supports Apache. It lives at <https://github.com/MaZderMind/testpage>; the
+original Apache version lives at <https://github.com/bernd289/testpage>.
+
+## How it works
+
+`index.shtml`, `full.txt` and `ip.txt` are Server Side Include templates.
+nginx evaluates them in-process, so the same template produces correct HTML
+*and* correct plain text. No `sub_filter`, no external process, no CSS tricks
+to hide the branch that should not have been rendered.
 
 ## Setup
 
-### Apache
+1. nginx must be built with the SSI module. It is part of every standard
+   build:
 
-1. Activate SSI in Apache: https://httpd.apache.org/docs/current/mod/mod_include.html
+   ```shell
+   nginx -V 2>&1 | grep -q with-http_ssi_module && echo "SSI enabled"
+   ```
 
+2. Point a server at this directory. `ssi_types` is what makes the `.txt`
+   endpoints work, since nginx only processes `text/html` by default:
 
-2. Activate Hostname Lookup in Apache.
+   ```nginx
+   geo $ipversion {
+       ::ffff:0:0/96 ipv4;
+       ::0/0        ipv6;
+       0.0.0.0/0    ipv4;
+   }
 
-Therefore change the following line from "Off" to "On" in the main apache2 conf, e.g. on Ubuntu
+   server {
+       listen 80;
+       listen [::]:80;
+       listen 443 ssl;
+       listen [::]:443 ssl;
+       http2 on;
 
-Original:
-`HostnameLookups Off`
+       server_name test.example.com;
+       root /var/www/testpage;
+       index index.shtml;
 
-Change to:
-`HostnameLookups On`
+       location / {
+           ssi on;
+           ssi_types text/plain;
 
-### Nginx
+           add_header Cache-Control "max-age=0, no-cache, no-store, must-revalidate" always;
+           add_header Pragma "no-cache" always;
+           add_header Expires "Mon, 1 Jan 2019 01:00:00 GMT" always;
+       }
+   }
+   ```
 
-1. Check that your Nginx has the [http_sub_module](https://nginx.org/en/docs/http/ngx_http_sub_module.html) enabled:
+   `geo` lives in the `http` context. Site configs included from
+   `sites-enabled/` already are, so it can sit at the top of the file.
 
-```shell
-nginx -V | grep -q http_sub_module && echo "http_sub_module enabled" || echo "http_sub_module disabled"
-```
+3. Endpoints:
 
-2. Configure an nginx site with the replacements:
+   | Path         | Content                              |
+   |--------------|--------------------------------------|
+   | `/`          | the HTML page                        |
+   | `/full.txt`  | the same information as plain text   |
+   | `/ip.txt`    | just the client address              |
 
-```
-geo $ipversion {
-        ::0/0 ipv6;
-        0.0.0.0/0 ipv4;
-}
+## Differences from the Apache version
 
-server {
-    server_name .test.example.com;
+- **No reverse DNS.** nginx has no built-in reverse lookup, so `REMOTE_HOST`
+  does not exist and the page always reports "(without DNS name)". Getting it
+  back needs a separate process in front of or behind nginx.
+- **No cipher key size.** nginx exposes `$ssl_cipher` but no variable for the
+  negotiated key size, so the "… bit" part is gone.
+- **Values are escaped.** nginx's `#echo` HTML-escapes by default. That also
+  closes the hole where Apache's version rendered a `User-Agent` containing
+  HTML markup verbatim. The `.txt` templates opt out with
+  `encoding="none"`.
+- **`$ipversion` comes from `geo`**, not from a regex on the address, so the
+  `geo` block above is required.
 
-    listen 80;
-    listen [::]:80;
-    listen 443 ssl http2;
-    listen [::]:443 ssl http2;
-    root /var/www/testpage;
-    index index.shtml;
+## Test instances
 
-    location / {
-        sub_filter '<!--#echo var="DATE_LOCAL" -->' '$date_local';
-        sub_filter '<!--#echo var="DATE_GMT" -->' '$date_gmt';
-        sub_filter '<!--#echo var="HTTP_ACCEPT_LANGUAGE" -->' '$http_accept_language';
-        sub_filter '<!--#echo var="HTTP_ACCEPT" -->' '$http_accept';
-        sub_filter '<!--#echo var="HTTP_CONNECTION" -->' '$http_connection';
-        sub_filter '<!--#echo var="HTTP_IPVERSION" -->' '$ipversion';
-        sub_filter '<!--#echo var="HTTP_USER_AGENT" -->' '$http_user_agent';
-        sub_filter '<!--#echo var="HTTPS" -->' '$https';
-        sub_filter '<!--#echo var="REMOTE_ADDR" -->' '$remote_addr';
-        sub_filter '<!--#echo var="REMOTE_HOST" -->' '';
-        sub_filter '<!--#echo var="REMOTE_PORT" -->' '$remote_port';
-        sub_filter '<!--#echo var="REQUEST_METHOD" -->' '$request_method';
-        sub_filter '<!--#echo var="SERVER_NAME" -->' '$host';
-        sub_filter '<!--#echo var="SERVER_ADDR" -->' '$server_addr';
-        sub_filter '<!--#echo var="SERVER_PORT" -->' '$server_port';
-        sub_filter '<!--#echo var="SERVER_PROTOCOL" -->' '$server_protocol';
-        sub_filter '<!--#echo var="SSL_PROTOCOL" -->' '$ssl_protocol';
-        sub_filter '<!--#echo var="SSL_CIPHER" -->' '$ssl_cipher';
-        sub_filter '<!--#echo var="SSL_TLS_SNI" -->' '$ssl_server_name';
-        sub_filter_once off;
-    }
-}
-```
+These run the upstream Apache version, not this fork:
 
-
-## You can test it here:
-
-https://test.matthiashille.com 
-(IPv4 only: https://test4.matthiashille.com IPv6 only: https://test6.matthiashille.com)
-
-https://test.mazdermind.de 
-(IPv4 only: https://test4.mazdermind.de IPv6 only: https://test6.mazdermind.de)
-
-https://test.dssr.ch
+- <https://test.matthiashille.com>
+  (IPv4 only: <https://test4.matthiashille.com>, IPv6 only: <https://test6.matthiashille.com>)
+- <https://test.mazdermind.de>
+  (IPv4 only: <https://test4.mazdermind.de>, IPv6 only: <https://test6.mazdermind.de>)
+- <https://test.dssr.ch>

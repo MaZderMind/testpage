@@ -1,1 +1,1 @@
-<!--#echo var="REMOTE_ADDR"-->
+<!--#echo var="remote_addr" encoding="none" -->
